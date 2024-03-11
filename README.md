@@ -12,3 +12,5 @@ A website all about open-world games! It's your go-to place for detailed info, i
 
 ## Dynamic Game Information:
 Showcasing the detailed description about each game, including the title and the rating.
+
+[Deployment link](https://s61-list-of-open-world-games.onrender.com/)
