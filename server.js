@@ -1,24 +1,34 @@
-const express = require('express')
-const mongoose = require('mongoose')
-require('dotenv').config()
-const app = express()
-const port = 3000
+const express = require('express');
+const mongoose = require('mongoose');
+require('dotenv').config();
+const app = express();
+const routes = require('./routes');
+const bodyParser = require('body-parser');
+const port = 8000;
 
-app.get('/ping', (req, res) => {
-    res.send("This is a basic express app with ping route")
-})
+const mongoUri = process.env.MONGODB_URI;
+mongoose.connect(mongoUri)
+  .then(() => {
+    console.log("MongoDB connected");
+    app.listen(port, () => {
+      console.log(`App listening on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+  });
 
-mongoose.connect(process.env.MONGODB_URI).then(() => console.log("MongoDB connected")).catch((err) => console.log("MongoDB connection error: ", err))
+app.use(express.json());
+app.use(bodyParser.json())
 
 app.get('/', (req, res) => {
-    if(mongoose.connection.readyState === 1){
-        res.send("Conneted to MongoDB Successfully✅")
-    }else{
-        res.send("Did not connect to MongoDB😔")
-    }
-})
-  
+  if (mongoose.connection.readyState === 1) {
+    res.send("Connected to MongoDB Successfully✅");
+  } else {
+    res.send("Did not connect to MongoDB");
+  }
+});
 
-app.listen(port, () => {
-    console.log(`App listening on port ${port}`)
-})
+app.use('/api', routes);
+
+module.exports = app;
