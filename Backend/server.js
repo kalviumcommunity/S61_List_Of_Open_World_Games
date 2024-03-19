@@ -1,13 +1,14 @@
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+require("dotenv").config();
 const app = express();
-const routes = require('./routes');
-const bodyParser = require('body-parser');
+const routes = require("./routes");
+const bodyParser = require("body-parser");
 const port = 8000;
 
 const mongoUri = process.env.MONGODB_URI;
-mongoose.connect(mongoUri)
+mongoose
+  .connect(mongoUri)
   .then(() => {
     console.log("MongoDB connected");
     app.listen(port, () => {
@@ -19,9 +20,9 @@ mongoose.connect(mongoUri)
   });
 
 app.use(express.json());
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
-app.get('/', (req, res) => {
+app.get("/", (req, res) => {
   if (mongoose.connection.readyState === 1) {
     res.send("Connected to MongoDB Successfully✅");
   } else {
@@ -29,6 +30,6 @@ app.get('/', (req, res) => {
   }
 });
 
-app.use('/api', routes);
+app.use("/api", routes);
 
 module.exports = app;
