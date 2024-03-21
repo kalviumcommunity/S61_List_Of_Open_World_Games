@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
+const cors = require("cors");
 const app = express();
 const routes = require("./routes");
 const bodyParser = require("body-parser");
@@ -21,6 +22,8 @@ mongoose
 
 app.use(express.json());
 app.use(bodyParser.json());
+
+app.use(cors());
 
 app.get("/", (req, res) => {
   if (mongoose.connection.readyState === 1) {
