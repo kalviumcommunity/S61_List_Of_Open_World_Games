@@ -1,10 +1,17 @@
 /* eslint-disable no-unused-vars */
-import React from "react";
+import React, { useEffect } from "react";
 import data from "../../data.json";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import axios from "axios";
 
 const Entity = () => {
+  useEffect(() => {
+    fetch("http://localhost:8000/api/data")
+      .then((res) => res.json())
+      .then((data) => console.log(data));
+  }, []);
+
   return (
     <div className="mx-auto m-[40px] max-w-lg p-[20px] shadow-md bg-gray-200 text-white rounded-lg">
       <Card className="text-center">
