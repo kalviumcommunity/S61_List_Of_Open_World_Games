@@ -1,11 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const GameModel = require("./Model/model");
+const entitySchema = require("./Model/entitySchema");
 
 router.post("/add", async (req, res) => {
-  const dataArray = req.body;
+  const gameData = req.body;
+  const { error } = entitySchema.validate(gameData);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   try {
-    const insertedGames = await GameModel.insertMany(dataArray);
+    const insertedGames = await GameModel.insertMany(gameData);
     res
       .status(201)
       .json({ message: "Games data posted successfully", data: insertedGames });
@@ -27,6 +33,7 @@ router.get("/data", async (req, res) => {
 
 router.delete("/remove/:id", async (req, res) => {
   const gameId = req.params.id;
+
   try {
     const deletedGame = await GameModel.findByIdAndDelete(gameId);
     if (!deletedGame) {
@@ -42,6 +49,11 @@ router.delete("/remove/:id", async (req, res) => {
 router.put("/update/:id", async (req, res) => {
   const gameId = req.params.id;
   const updatedGameData = req.body;
+  const { error } = entitySchema.validate(updatedGameData);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
+
   try {
     const updatedGame = await GameModel.findByIdAndUpdate(
       gameId,
