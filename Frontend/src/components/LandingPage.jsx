@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import logo from "../Assets/logo-transparent-png.png";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
@@ -21,9 +22,11 @@ const LandingPage = () => {
           selection of open-world games.
         </p>
       </nav>
-      <button className="py-3 px-4 border-[10px] border-transparent ml-[45%] mt-[20%] rounded-[0.45em] text-[#373B44] bg-gradient-conic-90deg-from-[#0000]-[#373B44] hover:bg-[#373B44] hover:text-white focus-visible:outline-[#373B44] focus-visible:outline-offset-[0.05em] focus-visible:outline-[3px] focus-visible:border-transparent transition-all duration-300 select-none touch-manipulation">
+      <Link to="/login">
+        <button className="py-3 px-4 border-[10px] border-transparent ml-[45%] mt-[20%] rounded-[0.45em] text-[#373B44] bg-gradient-conic-90deg-from-[#0000]-[#373B44] hover:bg-[#373B44] hover:text-white focus-visible:outline-[#373B44] focus-visible:outline-offset-[0.05em] focus-visible:outline-[3px] focus-visible:border-transparent transition-all duration-300 select-none touch-manipulation">
           Explore Games
         </button>
+      </Link>
     </div>
   );
 };

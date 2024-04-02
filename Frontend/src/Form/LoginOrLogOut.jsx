@@ -64,12 +64,12 @@ const LoginOrLogOut = () => {
   return (
     <div className="flex-center bg-yellow-300 h-screen w-screen">
       {isLoggedIn ? (
-        <div className="flex-center text-center text-[25px] bg-red-300">
+        <div className="flex-center h-screen text-center text-[25px] bg-red-300">
           <h2 className="relative top-52 text-gray-50 text-[25px] text-6xl ">
             Welcome, {username}!
           </h2>
           <button
-            className="border-[2px] px-[20px] py-[10px] rounded-xl bg-green-200 text-[20px] mt-[50%]"
+            className="border-[2px] px-[20px] py-[10px] rounded-xl bg-green-200 text-[20px] mt-[25%]"
             onClick={handleLogout}
           >
             Logout
