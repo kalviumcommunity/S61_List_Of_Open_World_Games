@@ -82,7 +82,7 @@ const Entity = () => {
               <CardContent>
                 <div className="text-4xl font-bold mb-4">{game._id}</div>
                 <div className="text-xl p-[10px]">
-                  <strong className="p-[5px]">Game Title</strong> :{" "}
+                  <strong className="p-[5px]">Id</strong> :{" "}
                   {game.id}
                 </div>
                 <div className="text-xl p-[10px]">
