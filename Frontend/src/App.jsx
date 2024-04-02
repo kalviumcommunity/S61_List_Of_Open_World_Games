@@ -12,7 +12,7 @@ function App() {
       <Routes>
         <Route exact path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginOrLogOut />} />
-        {/* <Route path="/entity" element={<Entity />} /> */}
+        <Route path="/entity" element={<Entity />} />
       </Routes>
     </BrowserRouter>
   );
