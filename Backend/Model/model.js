@@ -1,13 +1,14 @@
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema({
-  id:Number,
+  id: Number,
   gameTitle: String,
   publishedBy: String,
   yearOfRelease: Number,
   availablePlatforms: String,
   genre: String,
   description: String,
+  created_by: String,
 });
 
 const GameModel = mongoose.model("Game", gameSchema);
