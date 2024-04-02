@@ -4,6 +4,7 @@ require("dotenv").config();
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const port = 8000;
 
 const { User, hashPassword } = require("./Model/UserSchema");
@@ -57,8 +58,9 @@ app.post("/login", async (req, res) => {
       user = new User({ username, email, password });
       await user.save();
     }
-
-    const token = 'dummytoken';
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
     res.cookie("token", token, {
       httpOnly: true,
@@ -77,9 +79,15 @@ app.post("/login", async (req, res) => {
 app.get("/check-login", (req, res) => {
   const token = req.cookies.token;
 
-  if (token) {
+  if (!token) {
+    return res.json({ isLoggedIn: false });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     res.json({ isLoggedIn: true });
-  } else {
+  } catch (error) {
+    console.error("JWT verification error:", error);
     res.json({ isLoggedIn: false });
   }
 });
