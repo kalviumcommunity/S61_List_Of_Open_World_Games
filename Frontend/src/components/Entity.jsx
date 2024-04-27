@@ -3,14 +3,18 @@ import React, { useEffect, useState } from "react";
 // import data from "../../data.json";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import UpdateEntity from "../Form/UpdateEntity";
 import EntityForm from "../Form/EntityForm";
 import axios from "axios";
-import UpdateEntity from "../Form/UpdateEntity";
+import { useNavigate } from "react-router-dom";
 
 const Entity = () => {
   const [data, setData] = useState(null);
   const [filterCreatedBy, setFilterCreatedBy] = useState("");
   const [similarCreatedByValues, setsimilarCreatedByValues] = useState([]);
+  const [showUpdateForm, setShowUpdateForm] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch("https://s61-list-of-open-world-games.onrender.com/api/data")
@@ -24,12 +28,9 @@ const Entity = () => {
           return curr;
         }, []);
         setsimilarCreatedByValues(similarData);
-        // console.log(similarData);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, []);
-
-  // console.log(data);
 
   const handleDelete = (id) => {
     axios
@@ -42,19 +43,26 @@ const Entity = () => {
       })
       .catch((error) => console.error("Error deleting entity:", error));
   };
+
   const handleAddEntity = (newData) => {
     setData((prevData) => (prevData ? [...prevData, newData] : [newData]));
+    navigate("/entity");
   };
 
   const filteredData = filterCreatedBy
     ? data.filter((item) => item.created_by === filterCreatedBy)
     : data;
-    // console.log(filterCreatedBy)
+  // console.log(filterCreatedBy)
 
   return (
     <>
-      <UpdateEntity onAddEntity={handleAddEntity} />
-      <EntityForm onAddEntity={handleAddEntity} />
+      <button onClick={() => setShowUpdateForm(true)}>Update</button>
+
+      {showUpdateForm && <UpdateEntity onAddEntity={handleAddEntity} />}
+
+      <button onClick={() => setShowAddForm(true)}>Add Entity</button>
+
+      {showAddForm && <EntityForm onAddEntity={handleAddEntity} />}
 
       <div className="my-4">
         <label htmlFor="filterCreatedBy">Filter by Created By:</label>
@@ -74,16 +82,12 @@ const Entity = () => {
 
       {filteredData &&
         filteredData.map((game, i) => (
-          <div
-            className="mx-[5%] m-[40px] p-[20px] shadow-md bg-gray-200 text-white rounded-lg"
-            key={i}
-          >
-            <Card className="text-center">
+          <div key={i}>
+            <Card>
               <CardContent>
                 <div className="text-4xl font-bold mb-4">{game._id}</div>
                 <div className="text-xl p-[10px]">
-                  <strong className="p-[5px]">Id</strong> :{" "}
-                  {game.id}
+                  <strong className="p-[5px]">Id</strong> : {game.id}
                 </div>
                 <div className="text-xl p-[10px]">
                   <strong className="p-[5px]">Game Title</strong> :{" "}

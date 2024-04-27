@@ -54,80 +54,126 @@ const UpdateEntity = ({ onAddEntity }) => {
   };
 
   return (
-    <div>
+    <div className="text-center h-screen p-[2%] ">
+      <div className="text-center flex-col justify-center font-bold ">
+        <h1 className="text-[35px] text-black">Update Entity</h1>
+        <p className="text-[20px] mb-[20px] ">
+          Update the data using these form
+        </p>
+      </div>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Mongo_ID:</label>
+          <label className="mr-[18%]">
+            <strong>Mongo_ID</strong>
+          </label>
+          <br />
           <input
+            className="h-[30px] p-[8px] text-center w-[25%] border-[1px] border-black  "
             type="text"
             name="Mongo_ID"
             value={formData.Mongo_ID}
             onChange={handleChange}
+            placeholder="Enter Mongo_ID"
             required
           />
         </div>
         <div>
-          <label>Game Title:</label>
+          <label className="mr-[18%]">
+            <strong>Game title</strong>
+          </label>
+          <br />
           <input
+            className="h-[30px] p-[8px] text-center w-[25%] border-[1px] border-black  "
             type="text"
             name="gameTitle"
             value={formData.gameTitle}
             onChange={handleChange}
+            placeholder="Game Title"
             required
           />
         </div>
         <div>
-          <label>Published By:</label>
+          <label className="mr-[17%]">
+            <strong>Published By</strong>
+          </label>
+          <br />
           <input
+            className="h-[30px] p-[8px] text-center w-[25%] border-[1px] border-black  "
             type="text"
             name="publishedBy"
             value={formData["publishedBy"]}
             onChange={handleChange}
+            placeholder="Published By"
             required
           />
         </div>
         <div>
-          <label>Year of Release:</label>
+          <label className="mr-[15%]">
+            <strong>Year Of Release</strong>
+          </label>
+          <br />
           <input
-            type="number"
+            className="h-[30px] p-[8px] text-center w-[25%] border-[1px] border-black  "
+            type="numbe2"
             name="yearOfRelease"
             value={formData.yearOfRelease}
             onChange={handleChange}
+            placeholder="Year of Release"
             required
           />
         </div>
         <div>
-          <label>Available Platforms:</label>
+          <label className="mr-[13%]">
+            <strong>Available Platforms</strong>
+          </label>
+          <br />
           <input
+            className="h-[30px] p-[8px] text-center w-[25%] border-[1px] border-black  "
             type="text"
             name="availablePlatforms"
             value={formData.availablePlatforms}
             onChange={handleChange}
+            placeholder="Available Platforms"
             required
           />
         </div>
         <div>
-          <label>Genre:</label>
+          <label className="mr-[15%]">
+            <strong>Genre</strong>
+          </label>
+          <br />
           <input
+            className="h-[30px] p-[8px] text-center w-[25%] border-[1px] border-black  "
             type="text"
             name="genre"
             value={formData.genre}
             onChange={handleChange}
+            placeholder="Genre"
             required
           />
         </div>
         <div>
-          <label>Description:</label>
+          <label className="mr-[15%]">
+            <strong>Description</strong>
+          </label>
+          <br />
           <input
+            className="mb-[10px]h-[30px] p-[8px] text-center w-[25%] border-[1px] border-black  "
             type="text"
             name="description"
             value={formData.description}
             onChange={handleChange}
+            placeholder="Description"
             required
           />
         </div>
 
-        <button type="submit">Update Entity</button>
+        <button
+          className="border-[1px] border-bh-[30px]lack8-[10px] bg-yellow-200 "
+          type="submit"
+        >
+          Update Entity
+        </button>
       </form>
     </div>
   );
