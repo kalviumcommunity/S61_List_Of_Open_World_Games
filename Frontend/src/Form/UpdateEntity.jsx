@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const UpdateEntity = ({ onAddEntity }) => {
+const UpdateEntity = ({entity, onAddEntity }) => {
   const [formData, setFormData] = useState({
     Mongo_ID: "",
     gameTitle: "",
@@ -13,6 +13,11 @@ const UpdateEntity = ({ onAddEntity }) => {
     genre: "",
     description: "",
   });
+
+  useEffect(() => {
+    setFormData(entity);
+  }, [entity]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -40,7 +45,6 @@ const UpdateEntity = ({ onAddEntity }) => {
       }
       onAddEntity(newEntity);
       setFormData({
-        Mongo_ID: "",
         gameTitle: "",
         publishedBy: "",
         yearOfRelease: 0,
@@ -62,21 +66,6 @@ const UpdateEntity = ({ onAddEntity }) => {
         </p>
       </div>
       <form onSubmit={handleSubmit}>
-        <div>
-          <label className="mr-[18%]">
-            <strong>Mongo_ID</strong>
-          </label>
-          <br />
-          <input
-            className="h-[30px] p-[8px] text-center w-[25%] border-[1px] border-black  "
-            type="text"
-            name="Mongo_ID"
-            value={formData.Mongo_ID}
-            onChange={handleChange}
-            placeholder="Enter Mongo_ID"
-            required
-          />
-        </div>
         <div>
           <label className="mr-[18%]">
             <strong>Game title</strong>

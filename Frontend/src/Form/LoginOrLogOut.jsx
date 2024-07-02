@@ -1,6 +1,16 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import {
+  Box,
+  Heading,
+  Text,
+  Input,
+  Button,
+  FormControl,
+  FormLabel,
+} from "@chakra-ui/react";
+import { motion } from "framer-motion";
 
 const LoginOrLogOut = () => {
   const [username, setUsername] = useState("");
@@ -8,6 +18,7 @@ const LoginOrLogOut = () => {
   const [password, setPassword] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     checkLoginStatus();
@@ -27,11 +38,14 @@ const LoginOrLogOut = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("https://s61-list-of-open-world-games.onrender.com/login", {
-        username,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://s61-list-of-open-world-games.onrender.com/login",
+        {
+          username,
+          email,
+          password,
+        }
+      );
 
       const { token, username: loggedInUsername } = response.data;
 
@@ -41,6 +55,8 @@ const LoginOrLogOut = () => {
       setUsername(loggedInUsername);
       setEmail("");
       setPassword("");
+
+      navigate("/entity");
     } catch (error) {
       console.error("Login error:", error);
       if (error.response && error.response.data) {
@@ -54,7 +70,6 @@ const LoginOrLogOut = () => {
   const handleLogout = async () => {
     try {
       document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-      console.log(document.cookie);
       setIsLoggedIn(false);
     } catch (error) {
       console.error("Logout error:", error);
@@ -62,65 +77,87 @@ const LoginOrLogOut = () => {
   };
 
   return (
-    <div className="flex-center bg-yellow-300 h-screen w-screen">
-      {isLoggedIn ? (
-        <div className="flex-center h-screen text-center text-[25px] bg-red-300">
-          <h2 className="relative top-52 text-gray-50 text-[25px] text-6xl ">
-            Welcome, {username}!
-          </h2>
-          <button
-            className="border-[2px] px-[20px] py-[10px] rounded-xl bg-green-200 text-[20px] mt-[25%]"
-            onClick={handleLogout}
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      h="100vh"
+      bgGradient="linear(to-r, teal.500, teal.600)"
+    >
+      <Box
+        p={8}
+        maxW="md"
+        bg="white"
+        rounded="lg"
+        shadow="md"
+        textAlign="center"
+      >
+        {isLoggedIn ? (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            Logout
-          </button>
-        </div>
-      ) : (
-        <div className="text-center p-[20px]">
-          {error && (
-            <p className="flex-center text-red-600 text-[50px]">{error}</p>
-          )}
-          <form onSubmit={handleLogin}>
-            <div className="p-[10px] mt-[15%]">
-              <input
-                className="flex-center h-[70px] w-[75%] text-center text-[25px] border-[0px] rounded-full m-[10px] text-red-400 shadow-2xl"
-                type="text"
-                placeholder="Enter username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
-            </div>
-            <div className="p-[10px]">
-              <input
-                className="flex-center h-[70px] w-[75%] text-center text-[25px] border-[0px] rounded-full m-[10px] text-red-400 shadow-2xl"
-                type="email"
-                placeholder="Enter email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="p-[10px]">
-              <input
-                className="flex-center h-[70px] w-[75%] text-center text-[25px] border-[0px] rounded-full m-[10px] text-red-400 shadow-2xl"
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <button
-              className="border-[2px] px-[20px] py-[10px] rounded-xl bg-green-200 text-[20px] mt-[20px]"
-              type="submit"
-            >
-              Login
-            </button>
-          </form>
-        </div>
-      )}
-    </div>
+            <Heading>Welcome, {username}!</Heading>
+            <Button mt={4} colorScheme="red" onClick={handleLogout}>
+              Logout
+            </Button>
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <Heading mb={4}>Login to Your Account</Heading>
+            {error && <Text color="red.500">{error}</Text>}
+            <form onSubmit={handleLogin}>
+              <FormControl id="username" mb={4}>
+                <FormLabel>Username</FormLabel>
+                <Input
+                  type="text"
+                  placeholder="Enter username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <FormControl id="email" mb={4}>
+                <FormLabel>Email</FormLabel>
+                <Input
+                  type="email"
+                  placeholder="Enter email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <FormControl id="password" mb={6}>
+                <FormLabel>Password</FormLabel>
+                <Input
+                  type="password"
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </FormControl>
+              <Button
+                colorScheme="teal"
+                type="submit"
+                w="full"
+                py={4}
+                fontSize="lg"
+                fontWeight="bold"
+                letterSpacing="wide"
+              >
+                Login
+              </Button>
+            </form>
+          </motion.div>
+        )}
+      </Box>
+    </Box>
   );
 };
 

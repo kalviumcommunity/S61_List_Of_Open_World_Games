@@ -76,22 +76,6 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/check-login", (req, res) => {
-  const token = req.cookies.token;
-
-  if (!token) {
-    return res.json({ isLoggedIn: false });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.json({ isLoggedIn: true });
-  } catch (error) {
-    console.error("JWT verification error:", error);
-    res.json({ isLoggedIn: false });
-  }
-});
-
 app.get("/logout", (req, res) => {
   res.clearCookie("token");
   res.json({ message: "Logout successful" });

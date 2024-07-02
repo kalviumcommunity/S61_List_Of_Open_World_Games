@@ -10,12 +10,16 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/styled": "^11.11.5",
+    "@headlessui/react": "^2.0.4",
+    "@heroicons/react": "^1.0.6",
     "@mui/material": "^5.15.14",
     "@mui/styled-engine-sc": "^6.0.0-alpha.18",
     "axios": "^1.6.8",
     "create-cloudflare": "^2.14.2",
+    "framer-motion": "^11.2.11",
     "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -32,7 +36,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
     "postcss": "^8.4.36",
-    "tailwindcss": "^3.4.1",
+    "tailwindcss": "^3.4.4",
     "vite": "^5.1.6"
   }
 }
