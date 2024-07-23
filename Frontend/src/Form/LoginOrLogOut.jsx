@@ -82,15 +82,28 @@ const LoginOrLogOut = () => {
       justifyContent="center"
       alignItems="center"
       h="100vh"
-      bgGradient="linear(to-r, teal.500, teal.600)"
+      bg="url('https://i.pinimg.com/474x/3c/08/cd/3c08cdac961968f58431737db8ba570e.jpg')"
+      bgSize="cover"
+      position="relative"
     >
+      <Box
+        position="absolute"
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        bg="rgba(0, 0, 0, 0.5)"
+        backdropFilter="blur(10px)"
+      ></Box>
       <Box
         p={8}
         maxW="md"
-        bg="white"
-        rounded="lg"
-        shadow="md"
+        bg="rgba(255, 255, 255, 0.1)"
+        borderRadius="lg"
+        boxShadow="lg"
         textAlign="center"
+        backdropFilter="blur(20px)"
+        zIndex={1}
       >
         {isLoggedIn ? (
           <motion.div
@@ -98,7 +111,7 @@ const LoginOrLogOut = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Heading>Welcome, {username}!</Heading>
+            <Heading color="white">Welcome, {username}!</Heading>
             <Button mt={4} colorScheme="red" onClick={handleLogout}>
               Logout
             </Button>
@@ -109,11 +122,13 @@ const LoginOrLogOut = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Heading mb={4}>Login to Your Account</Heading>
+            <Heading mb={4} color="white">
+              Login to Your Account
+            </Heading>
             {error && <Text color="red.500">{error}</Text>}
             <form onSubmit={handleLogin}>
               <FormControl id="username" mb={4}>
-                <FormLabel>Username</FormLabel>
+                <FormLabel color="white">Username</FormLabel>
                 <Input
                   type="text"
                   placeholder="Enter username"
@@ -123,7 +138,7 @@ const LoginOrLogOut = () => {
                 />
               </FormControl>
               <FormControl id="email" mb={4}>
-                <FormLabel>Email</FormLabel>
+                <FormLabel color="white">Email</FormLabel>
                 <Input
                   type="email"
                   placeholder="Enter email"
@@ -133,7 +148,7 @@ const LoginOrLogOut = () => {
                 />
               </FormControl>
               <FormControl id="password" mb={6}>
-                <FormLabel>Password</FormLabel>
+                <FormLabel color="white">Password</FormLabel>
                 <Input
                   type="password"
                   placeholder="Enter password"
