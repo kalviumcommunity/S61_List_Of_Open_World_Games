@@ -203,6 +203,7 @@ const Entity = () => {
           borderColor="gray.400"
           focusBorderColor="blue.400"
         >
+          <label htmlFor="filterCreatedBy">Filter by Creator</label>
           <option value="">All</option>
           {similarCreatedByValues.map((value, index) => (
             <option key={index} value={value}>
