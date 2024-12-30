@@ -19,27 +19,30 @@ import {
   MenuItem,
   Flex,
   useToast,
-  Modal, // Import Modal component
+  Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Textarea, // Import Textarea component for multi-line input
+  Textarea,
+  Heading,
+  IconButton,
 } from "@chakra-ui/react";
 import { useNavigate } from "react-router-dom";
-import EntityForm from "../Form/EntityForm"; // Import EntityForm component
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import EntityForm from "../Form/EntityForm";
 
 const Entity = () => {
   const [data, setData] = useState(null);
   const [filterCreatedBy, setFilterCreatedBy] = useState("");
   const [similarCreatedByValues, setSimilarCreatedByValues] = useState([]);
-  const [showUpdateForm, setShowUpdateForm] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [editData, setEditData] = useState({});
   const [isEditing, setIsEditing] = useState(false);
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const navigate = useNavigate();
   const toast = useToast();
 
@@ -72,31 +75,29 @@ const Entity = () => {
     }
   };
 
-  const handleDelete = (id) => {
-    axios
-      .delete(
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(
         `https://s61-list-of-open-world-games.onrender.com/api/remove/${id}`
-      )
-      .then(() => {
-        setData((prevData) => prevData.filter((item) => item._id !== id));
-        toast({
-          title: "Success",
-          description: "Item deleted successfully",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-      })
-      .catch((error) => {
-        console.error("Error deleting entity:", error);
-        toast({
-          title: "Error",
-          description: "Failed to delete item",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
+      );
+      setData((prevData) => prevData.filter((item) => item._id !== id));
+      toast({
+        title: "Success",
+        description: "Item deleted successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
       });
+    } catch (error) {
+      console.error("Error deleting entity:", error);
+      toast({
+        title: "Error",
+        description: "Failed to delete item",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
   };
 
   const handleEdit = (id) => {
@@ -106,17 +107,44 @@ const Entity = () => {
     setIsEditing(true);
   };
 
-  const handleSaveEdit = () => {
-    console.log("Edited data:", editData);
-    setIsEditing(false);
-    setShowUpdateForm(false);
-    toast({
-      title: "Success",
-      description: "Data updated successfully",
-      status: "success",
-      duration: 3000,
-      isClosable: true,
-    });
+  const handleSaveEdit = async () => {
+    try {
+      const response = await axios.patch(
+        `https://s61-list-of-open-world-games.onrender.com/api/update/${editData._id}`,
+        editData
+      );
+
+      setData((prevData) =>
+        prevData.map((item) =>
+          item._id === editData._id ? { ...item, ...editData } : item
+        )
+      );
+
+      setIsEditing(false);
+      toast({
+        title: "Success",
+        description: "Data updated successfully",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+    } catch (error) {
+      console.error("Error updating entity:", error);
+      toast({
+        title: "Error",
+        description: "Failed to update data",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const toggleDescription = (id) => {
+    setExpandedDescriptions((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
   };
 
   const filteredData = filterCreatedBy
@@ -124,14 +152,32 @@ const Entity = () => {
     : data;
 
   return (
-    <VStack spacing={8} align="stretch" p={8}>
-      <Button
-        width={"15%"}
-        colorScheme="blue"
-        onClick={() => setShowAddForm(true)}
-      >
-        Add Entity
-      </Button>
+    <VStack spacing={8} align="stretch" p={8} bg="gray.100" minH="100vh">
+      <Flex justify="space-between" align="center" width="100%" mb={4}>
+        <Heading size="lg" color="blue.700">
+          Game Entity Manager
+        </Heading>
+        <Flex gap={4}>
+          <Button
+            colorScheme="blue"
+            onClick={() => setShowAddForm(true)}
+            fontSize="md"
+          >
+            Add Entity
+          </Button>
+          <Button
+            colorScheme="red"
+            onClick={() => {
+              document.cookie =
+                "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
+              navigate("/login");
+            }}
+            fontSize="md"
+          >
+            Logout
+          </Button>
+        </Flex>
+      </Flex>
 
       {showAddForm && (
         <Modal isOpen={showAddForm} onClose={() => setShowAddForm(false)}>
@@ -149,13 +195,13 @@ const Entity = () => {
       <FormControl>
         <Select
           width={"25%"}
-          position={"relative"}
-          top={"5%"}
-          right={"-75%"}
           id="filterCreatedBy"
           value={filterCreatedBy}
           onChange={(e) => setFilterCreatedBy(e.target.value)}
-          placeholder="Select option"
+          placeholder="Filter by Creator"
+          bg="white"
+          borderColor="gray.400"
+          focusBorderColor="blue.400"
         >
           <option value="">All</option>
           {similarCreatedByValues.map((value, index) => (
@@ -166,34 +212,66 @@ const Entity = () => {
         </Select>
       </FormControl>
 
-      <Grid templateColumns="repeat(auto-fit, minmax(600px, 1fr))" gap={6}>
+      <Grid templateColumns="repeat(auto-fit, minmax(300px, 1fr))" gap={6}>
         {filteredData &&
           filteredData.map((game, i) => (
-            <Card key={i} p={4}>
-              <Text fontSize="xl">
-                <strong>Game Title</strong>: {game.gameTitle}
+            <Card
+              key={i}
+              bg="white"
+              borderRadius="md"
+              boxShadow="md"
+              p={4}
+              _hover={{ boxShadow: "lg", transform: "scale(1.02)" }}
+              transition="all 0.2s"
+            >
+              <Text fontSize="xl" fontWeight="bold" color="blue.600">
+                {game.gameTitle}
               </Text>
-              <Text fontSize="lg">
-                <strong>Published By</strong>: {game.publishedBy}
+              <Text fontSize="md" color="gray.600">
+                <strong>Published By:</strong> {game.publishedBy}
               </Text>
-              <Text fontSize="lg">
-                <strong>Year Of Release</strong>: {game.yearOfRelease}
+              <Text fontSize="md" color="gray.600">
+                <strong>Year Of Release:</strong> {game.yearOfRelease}
               </Text>
-              <Text fontSize="lg">
-                <strong>Available Platforms</strong>: {game.availablePlatforms}
+              <Text fontSize="md" color="gray.600">
+                <strong>Platforms:</strong> {game.availablePlatforms}
               </Text>
-              <Text fontSize="lg">
-                <strong>Genre</strong>: {game.genre}
+              <Text fontSize="md" color="gray.600">
+                <strong>Genre:</strong> {game.genre}
               </Text>
-              <Text fontSize="lg">
-                <strong>Description</strong>: {game.description}
+              <Text fontSize="md" color="gray.600" noOfLines={3}>
+                <strong>Description:</strong>{" "}
+                {expandedDescriptions[game._id]
+                  ? game.description
+                  : `${game.description.slice(0, 100)}...`}
+                <Button
+                  ml={2}
+                  size="sm"
+                  variant="link"
+                  colorScheme="blue"
+                  onClick={() => toggleDescription(game._id)}
+                >
+                  {expandedDescriptions[game._id] ? "Show Less" : "Show More"}
+                </Button>
               </Text>
-              <Text fontSize="lg">
-                <strong>Created By</strong>: {game.created_by}
+              <Text fontSize="md" color="gray.600">
+                <strong>Created By:</strong> {game.created_by}
               </Text>
               <Flex justify="space-between" mt={4}>
-                <Button onClick={() => handleEdit(game._id)}>Edit</Button>
-                <Button onClick={() => handleDelete(game._id)}>Delete</Button>
+                <Button
+                  colorScheme="teal"
+                  size="sm"
+                  onClick={() => handleEdit(game._id)}
+                >
+                  Edit
+                </Button>
+                <Button
+                  colorScheme="red"
+                  size="sm"
+                  onClick={() => handleDelete(game._id)}
+                >
+                  Delete
+                </Button>
               </Flex>
             </Card>
           ))}
@@ -206,69 +284,60 @@ const Entity = () => {
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
-              <FormLabel htmlFor="gameTitle">Game Title:</FormLabel>
+              <FormLabel>Game Title:</FormLabel>
               <Input
-                id="gameTitle"
                 value={editData.gameTitle}
                 onChange={(e) =>
                   setEditData({ ...editData, gameTitle: e.target.value })
                 }
               />
-              <FormLabel htmlFor="publishedBy">Published By:</FormLabel>
-              <Input 
-                id="publishedBy"
+              <FormLabel>Published By:</FormLabel>
+              <Input
                 value={editData.publishedBy}
                 onChange={(e) =>
-                  setEditData({...editData, publishedBy: e.target.value })
+                  setEditData({ ...editData, publishedBy: e.target.value })
                 }
               />
-              <FormLabel htmlFor="yearOfRelease">Year Of Release:</FormLabel>
-              <Input 
-                id="yearOfRelease"
+              <FormLabel>Year Of Release:</FormLabel>
+              <Input
                 value={editData.yearOfRelease}
                 onChange={(e) =>
-                  setEditData({...editData, yearOfRelease: e.target.value })
+                  setEditData({ ...editData, yearOfRelease: e.target.value })
                 }
               />
-              <FormLabel htmlFor="availablePlatforms">Available Platforms:</FormLabel>
-              <Input 
-                id="availablePlatforms"
+              <FormLabel>Genre:</FormLabel>
+              <Input
+                value={editData.genre}
+                onChange={(e) =>
+                  setEditData({ ...editData, genre: e.target.value })
+                }
+              />
+              <FormLabel>Platforms:</FormLabel>
+              <Textarea
                 value={editData.availablePlatforms}
                 onChange={(e) =>
                   setEditData({
-                   ...editData,
+                    ...editData,
                     availablePlatforms: e.target.value,
                   })
                 }
               />
-              <FormLabel htmlFor="genre">Genre:</FormLabel>
-              <Input 
-                id="genre"
-                value={editData.genre}
-                onChange={(e) =>
-                  setEditData({...editData, genre: e.target.value })
-                }
-              />
-              <FormLabel htmlFor="description">Description:</FormLabel>
-              <Textarea 
-                id="description"
+              <FormLabel>Description:</FormLabel>
+              <Textarea
                 value={editData.description}
                 onChange={(e) =>
-                  setEditData({...editData, description: e.target.value })
-                }
-              />
-              <FormLabel htmlFor="created_by">Created By:</FormLabel>
-              <Input 
-                id="created_by"
-                value={editData.created_by}
-                onChange={(e) =>
-                  setEditData({...editData, created_by: e.target.value })
+                  setEditData({ ...editData, description: e.target.value })
                 }
               />
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSaveEdit}>
+            <Button
+              colorScheme="blue"
+              mr={3}
+              onClick={handleSaveEdit}
+              isDisabled={!editData.gameTitle}
+            >
               Save
             </Button>
             <Button onClick={() => setIsEditing(false)}>Cancel</Button>
